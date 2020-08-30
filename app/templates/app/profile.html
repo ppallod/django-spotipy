@@ -1,0 +1,81 @@
+{% extends "app/layout.html" %}
+{% load favorites %}
+{% block title %}
+    {{profile.username}}
+{% endblock %}
+
+{% block body %}
+    <script>
+        function fun(x){
+            const flag = x.dataset.flag;
+            const name = x.dataset.name;
+            const artist = x.dataset.artist;
+            const image_url = x.dataset.image_url;
+            const preview_url = x.dataset.preview_url;
+            const song_id = x.dataset.song_id;
+            
+            
+            fetch('/addsong', {
+                method: 'POST',
+                credentials: "same-origin",
+                headers: {
+                    "X-CSRFToken": '{{ csrf_token }}',
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    flag:flag,
+                    song_id: song_id,
+                    name: name,
+                    artist:artist,
+                    image_url:image_url,
+                    preview_url:preview_url
+                })
+            })
+
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+            });
+        
+            if (flag === "add") {
+                x.innerHTML = "Remove from favorites"
+                x.dataset.flag = "remove"
+            }
+
+            else {
+                x.innerHTML = "Add to favorites"
+                x.dataset.flag = "add"
+            }
+
+        };
+    </script>
+
+    <h1 style="margin: 30px;">{{profile.username}}</h1>
+    <h2 style="margin: 30px;">Favorite Songs</h2>
+    {% for track in tracks %}
+        <div style="margin: 30px;">
+            <div class="card" style="width: 25rem;">
+                <img class="card-img-top" src="{{track.image_url}}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">{{track.name}}</h5>
+                    <div class="card-text">
+                        <p style="white-space: pre-line;">Artist - {{track.artist}}
+                        </p>
+                    </div>
+                    <audio controls="controls">
+                        <source src="{{track.preview_url}}"/>
+                    </audio>
+                    {% is_favorite user track.id as favorite_flag %}
+                        {% if favorite_flag %}
+                            <button data-flag="remove" data-song_id="{{track.id}}" data-name="{{track.name}}" data-artist="{{track.artists.0.name}}" data-image_url="{{album.images.0.url}}" data-preview_url="{{track.preview_url}}" onclick="fun(this)" class="btn btn-dark">Remove from favorites</button>
+                        {% else %}
+                            <button data-flag="add" data-song_id="{{track.id}}" data-name="{{track.name}}" data-artist="{{track.artists.0.name}}" data-image_url="{{album.images.0.url}}" data-preview_url="{{track.preview_url}}" onclick="fun(this)" class="btn btn-dark">Add to favorites</button>
+                        {% endif %}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div>No Tracks</div>
+    {% endfor %}
+{% endblock %}

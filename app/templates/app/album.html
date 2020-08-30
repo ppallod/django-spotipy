@@ -1,0 +1,36 @@
+{% extends "app/layout.html" %}
+{% block title %}
+    Albums
+{% endblock %}
+
+{% block body %}
+    {% for album in albums %}
+        <div style="height: 400px; width: 500px; margin: 40px; padding: 40px; position: center; white-space: pre-line;">
+            <a href="{% url 'album' album.id %}" style="margin: 20px;"><h3>{{album.name}}</h3></a><span><strong>Release Date - {{album.release_date}}</strong></span>
+            <span><strong>Total Tracks - {{album.total_tracks}}</strong></span>
+            <span><strong>Artist - {{album.artists.0.name}}</strong></span>
+            <img src="{{album.images.0.url}}" height="300" width="300" style="text-align: right;">
+            
+        </div>
+    {% empty %}
+    <h4>No Albums Found</h4>
+    {% endfor %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; First</a>
+                <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+            <div>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                {% endif %}
+            </div>
+        </span>
+    </div>
+{% endblock %}

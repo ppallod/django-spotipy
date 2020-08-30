@@ -1,0 +1,36 @@
+{% extends "app/layout.html" %}
+{% block title %}
+    Artist
+{% endblock %}
+
+{% block body %}
+    {% for artist in artists %}
+        <div style="height: 300px; width: 500px; margin: 40px; position: center;" data-id="0z4gvV4rjIZ9wHck67ucSV">
+            <a href="{% url 'artist' artist.id %}"><h3>{{artist.name}}</h3></a>
+            <span><strong>Followers - {{artist.followers.total}}</strong></span>
+            <span><strong>Genres - {{artist.genres.0}}</strong></span>
+            <span><strong>Popularity - {{artist.popularity}}</strong></span>
+            <img src="{{artist.images.0.url}}" height="200" width="200" style="text-align: right;">
+        </div>
+    {% empty %}
+    <h4>No Artists Found</h4>
+    {% endfor %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; First</a>
+                <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+            <div>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                {% endif %}
+            </div>
+        </span>
+    </div>
+{% endblock %}

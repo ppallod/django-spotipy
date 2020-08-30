@@ -1,0 +1,20 @@
+{% extends "app/layout.html" %}
+
+{% block title %}
+    Search
+{% endblock %}
+
+{% block body %}
+    <h2 style="padding-bottom: 20px; margin:10px">Search Music</h2>
+    <nav class="navbar navbar-light bg-light">
+        <form class="form-inline" action="{% url 'index' %}" method="POST">
+          {% csrf_token %}
+          <input name = "query" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" size="100px">
+          <select name="entity" class="selectpicker">
+            <option value="artist">Artist</option>
+            <option value="album">Albums</option>
+          </select>          
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </nav>
+{% endblock %}
